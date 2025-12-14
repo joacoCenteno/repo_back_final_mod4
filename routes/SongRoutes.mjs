@@ -5,21 +5,29 @@ import {
     crearCancionController,
     eliminarCancionController,
     actualizarCancionController,
-    obtenerPorGeneroController
+    obtenerPorGeneroController,
+    obtenerRecientesController,
+    buscarCanciones
 } from '../controller/SongController.mjs';
+
+import { authenticateToken, hasPermission } from '../middleware/authMiddleware.mjs';
 
 
 const router = express.Router();
 
-router.get('/canciones/filtros', obtenerPorGeneroController)
-router.get('/canciones', obtenerTodasCancionesController);
-router.get('/cancion/:id', obtenerCancionController);
+router.get('/buscar', authenticateToken, buscarCanciones)
+
+router.get('/recientes', obtenerRecientesController)
+router.get('/filtros', authenticateToken, hasPermission('read:canciones') , obtenerPorGeneroController)
+router.get('/', obtenerTodasCancionesController);
+router.get('/:id', authenticateToken, hasPermission('read:canciones') , obtenerCancionController);
 
 
-router.post('/cancion/crear', crearCancionController);
 
-router.put('/cancion/actualizar/:id', actualizarCancionController);
+router.post('/crear', authenticateToken, hasPermission('create:canciones') , crearCancionController);
 
-router.delete('/cancion/eliminar/:id', eliminarCancionController)
+router.put('/actualizar/:id', authenticateToken, hasPermission('update:canciones') , actualizarCancionController);
+
+router.delete('/eliminar/:id', authenticateToken, hasPermission('delete:canciones') , eliminarCancionController)
 
 export default router;

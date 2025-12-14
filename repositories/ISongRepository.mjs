@@ -19,7 +19,19 @@ export default class ISongRepository{
         throw new Error('Metodo eliminar() no implementado')
     }
 
-    obtenerPorGenero(genero){
+    obtenerPorGenero(filtro,page,limit){
         throw new Error('Metodo obtenerPorGenero() no implementado')
+    }
+
+    obtenerRecientes(page,limit){
+        throw new Error('Metodo obtenerRecientes() no implementado')
+    }
+
+    cantidadCoincidencias(filtros){
+        throw new Error('Metodo cantidadCoincidenias() no implementado')
+    }
+
+    cancionFiltrado(filtros,skip,limite){
+        throw new Error('Metodo cancionFiltrado() no implementado')
     }
 }

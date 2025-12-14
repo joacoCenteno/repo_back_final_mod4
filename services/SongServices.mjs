@@ -20,6 +20,21 @@ export async function actualizarSong(id, body){
     return await SongRepository.actualizar(id,body)
 }
 
-export async function obtenerPorGenero(genero){
-    return await SongRepository.obtenerPorGenero(genero)
+export async function obtenerPorGenero(filtro,page,limit){
+    const {canciones,total} = await SongRepository.obtenerPorGenero(filtro,page,limit)
+    return {canciones,total}
+}
+
+export async function obtenerRecientes(page,limit){
+    const {canciones,total} = await SongRepository.obtenerRecientes(page,limit);
+    return {canciones,total}
+
+}
+
+export async function CancionFiltrado(filtros, skip, limite){
+    return await SongRepository.cancionFiltrado(filtros, skip, limite)
+}
+
+export async function CantidadCoincidencias(filtros){
+    return await SongRepository.cantidadCoincidencias(filtros)
 }

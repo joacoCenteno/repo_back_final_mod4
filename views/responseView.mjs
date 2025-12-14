@@ -7,7 +7,8 @@ export function renderizarSong(song){
         duracion: song.duracion,
         generos: song.generos,
         imagen: song.imagen,
-        url: song.url
+        url: song.url,
+        fecha: song.fechaIngreso
     }
 }
 

@@ -1,4 +1,4 @@
-import {obtenerSongPorId, obtenerTodosSong, crearInstanciaSong, actualizarSong, eliminarSong, obtenerPorGenero} from '../services/SongServices.mjs';
+import {obtenerSongPorId, obtenerTodosSong, crearInstanciaSong, actualizarSong, eliminarSong, obtenerPorGenero, obtenerRecientes, CancionFiltrado, CantidadCoincidencias} from '../services/SongServices.mjs';
 import {renderizarSong,renderizarListaSong} from '../views/responseView.mjs';
 
 export async function obtenerCancionController(req,res){
@@ -80,18 +80,98 @@ export async function eliminarCancionController(req,res){
 
 export async function obtenerPorGeneroController(req,res){
     try{
-        const {genero} = req.query;
-        const canciones_filtradas = await obtenerPorGenero(genero);
+        const {genero, page=1} = req.query;
+        const limit = 10
 
-        if(!canciones_filtradas){
+        let filtro = {};
+
+        if (genero !== "") {
+        const regex = new RegExp(genero, "i");
+
+        filtro = {
+            $or: [
+            { generos: regex }
+            ]
+        };
+        }
+
+        const {canciones, total} = await obtenerPorGenero(filtro,Number(page), limit);
+
+        if(!canciones){
             return res.status(404).send({mensaje: 'Error al obtener canciones'});
         }
 
-        const cancionesFormateadas = renderizarListaSong(canciones_filtradas);
+        const canciones_formateadas = renderizarListaSong(canciones);
 
-        res.status(200).json(cancionesFormateadas)
+        res.status(200).json({
+            canciones: canciones_formateadas,
+            paginacion: {
+                page: Number(page),
+                total,
+                pages: Math.ceil(total / limit)
+            }
+        })
 
     }catch(err){
         res.status(500).send({mensaje:'Error al eliminar la cancion', err: err.message})
+    }
+}
+
+
+export async function obtenerRecientesController(req,res){
+    try{
+        const { page = 1 } = req.query
+        const limit = 10
+
+        const  {canciones, total} = await obtenerRecientes(Number(page), limit)
+
+       
+        const canciones_formateadas = renderizarListaSong(canciones);
+
+        res.status(200).json({
+            canciones: canciones_formateadas,
+            paginacion: {
+                page: Number(page),
+                total,
+                pages: Math.ceil(total / limit)
+            }
+        })
+    }catch(err){
+        res.status(500).send({mensaje:'Error al obtener recientes', error: err.message})
+    }
+}
+
+export async function buscarCanciones(req,res){
+    try {
+        const {q, page = 1} = req.query;
+        const limite = 8;
+        const skip = (page - 1) * limite;
+
+        let filtro = {};
+
+        if (q !== "") {
+        const regex = new RegExp(q, "i");
+
+        filtro = {
+            $or: [
+            { titulo: regex },
+            { artista: regex },
+            { album: regex }
+            ]
+        };
+        }
+
+
+        const canciones = await CancionFiltrado(filtro,skip,limite)
+        
+        const total = await CantidadCoincidencias(filtro)
+
+        res.status(200).json({canciones, paginacion: {
+            page: Number(page),
+            total,
+            pages: Math.ceil(total/limite)
+        }})
+    } catch (error) {
+        res.status(500).json({mensaje: "Error buscando canciones", error: error.message})
     }
 }

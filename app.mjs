@@ -1,7 +1,15 @@
 import express from 'express';
 import {connectDB} from './config/dbConfig.mjs';
-import SongRoutes from './routes/SongRoutes.mjs';
+import indexRoute from './routes/indexRoute.mjs';
+import dotenv from 'dotenv';
+
 import cors from 'cors'
+
+import './models/PermisosModel.mjs'
+import './models/Role.mjs'
+import './models/User.mjs'
+
+dotenv.config();
 
 const app = express()
 const PORT = process.env.PORT || 3000;  
@@ -12,7 +20,8 @@ app.use(cors());
 
 connectDB()
 
-app.use('/',SongRoutes);
+app.use('',indexRoute);
+
 
 app.use((req,res)=>{
     res.status(404).send({message: 'Endpoint Not Found'});

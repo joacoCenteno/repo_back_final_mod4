@@ -8,7 +8,8 @@ const songSchema = new mongoose.Schema(
         duracion: {type: Number},
         generos: {type: [String], required:true},
         imagen: {type:String},
-        url: {type:String, required:true}
+        url: {type:String, required:true},
+        fechaIngreso: {type: Date, default: Date.now()}
     }
 );
 

@@ -1,6 +1,7 @@
 import User from '../models/User.mjs'
 import Playlist from '../models/PlaylistModel.mjs';
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose';
 
 
 export function authenticateToken(req,res,next){
@@ -55,16 +56,21 @@ export function hasPermission(requiredPermission){
 
 export async function esPropietario(req,res,next){
     try {
+        const {id} = req.params.id;
+
+        if(!mongoose.Types.ObjectId.isValid(id)){
+            return res.status(400).json({mensaje: "ID de playlist inválido"})
+        }
         const playlist = await Playlist.findById(req.params.id);
 
         if(!playlist) return res.status(404).json({mensaje: "Playlist no encontrada"})
 
         if(playlist.usuario._id.toString() !== req.user.id){
-            return res.status(403).jason({mensaje: "No podes modificar esa playlist"})
+            return res.status(403).json({mensaje: "No podes modificar esa playlist"})
         }
 
         next()
     } catch (error) {
-        res.status(500).json({error: error.message})
+        res.status(500).json({mensaje: "Ocurrio un error al verificar los permisos"})
     }
 }

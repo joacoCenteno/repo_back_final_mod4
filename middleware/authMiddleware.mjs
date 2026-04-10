@@ -56,7 +56,7 @@ export function hasPermission(requiredPermission){
 
 export async function esPropietario(req,res,next){
     try {
-        const {id} = req.params.id;
+        const {id} = req.params;
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({mensaje: "ID de playlist inválido"})

@@ -2,12 +2,14 @@ import express from 'express';
 import {connectDB} from './config/dbConfig.mjs';
 import indexRoute from './routes/indexRoute.mjs';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
 
 import cors from 'cors'
 
 import './models/PermisosModel.mjs'
 import './models/Role.mjs'
 import './models/User.mjs'
+import { generalLimiter } from './middleware/rateLimit.mjs';
 
 dotenv.config();
 
@@ -17,10 +19,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(helmet());
+app.use(generalLimiter)
 
 connectDB()
 
 app.use('',indexRoute);
+
 
 
 app.use((req,res)=>{

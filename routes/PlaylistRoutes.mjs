@@ -10,21 +10,22 @@ import {
 } from '../controller/PlaylistController.mjs';
 
 import { authenticateToken, hasPermission, esPropietario } from '../middleware/authMiddleware.mjs';
-
+import {playlistValidator} from '../middleware/validationRules.mjs'
+import { readLimiter, writeLimiter } from '../middleware/rateLimit.mjs';
 
 const router = express.Router();
 
-router.get('/buscar', authenticateToken, buscarPlaylists)
+router.get('/buscar', authenticateToken, readLimiter, buscarPlaylists)
 
-router.get('/:id', authenticateToken, hasPermission('read:playlists') , obtenerPlaylistController)
+router.get('/:id', authenticateToken, readLimiter, hasPermission('read:playlists'), obtenerPlaylistController)
 
-router.post('/crear', authenticateToken, hasPermission('create:playlist') , crearPlaylistController);
-router.post('/:id/cancion/:idCancion', authenticateToken, esPropietario, hasPermission('update:playlist') , agregarCancionController);
+router.post('/crear', authenticateToken, writeLimiter, hasPermission('create:playlist'), playlistValidator, crearPlaylistController);
+router.post('/:id/cancion/:idCancion', authenticateToken, writeLimiter, esPropietario, hasPermission('update:playlist') , agregarCancionController);
 
-router.put('/actualizar/:id', authenticateToken, esPropietario, hasPermission('update:playlist') , editarPlaylistController);
+router.put('/actualizar/:id', authenticateToken, writeLimiter, esPropietario, hasPermission('update:playlist'), playlistValidator, editarPlaylistController);
 
-router.delete('/:id/cancion/:idCancion', authenticateToken, esPropietario, hasPermission('update:playlist') , eliminarCancionController)
-router.delete('/eliminar/:id', authenticateToken, esPropietario, hasPermission('delete:playlist') , eliminarPlaylistController)
+router.delete('/:id/cancion/:idCancion', authenticateToken, writeLimiter, esPropietario, hasPermission('update:playlist') , eliminarCancionController)
+router.delete('/eliminar/:id', authenticateToken, writeLimiter, esPropietario, hasPermission('delete:playlist') , eliminarPlaylistController)
 
 
 export default router;

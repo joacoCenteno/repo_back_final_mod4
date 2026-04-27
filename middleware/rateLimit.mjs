@@ -6,41 +6,27 @@ export const generalLimiter = rateLimit({
 })
 
 export const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
+    windowMs: 2 * 60 * 1000,
+    max: 10,
     standardHeaders: true,
     legacyHeaders: false,
 
     handler: (req, res) => {
-        const seconds = Math.ceil(
-        (req.rateLimit.resetTime - Date.now()) / 1000
-        );
-
-        res.set('Retry-After', seconds);
-
         res.status(429).json({
-            message: "Demasiados intentos",
-            retryAfter: seconds
+            message: "Demasiados intentos, espere unos instantes",
         });
     }
 })
 
 export const registerLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 3,
+    max: 5,
     standardHeaders: true,
     legacyHeaders: false,
 
     handler: (req, res) => {
-        const seconds = Math.ceil(
-        (req.rateLimit.resetTime - Date.now()) / 1000
-        );
-
-        res.set('Retry-After', seconds);
-
         res.status(429).json({
-            message: "Demasiados intentos",
-            retryAfter: seconds
+            message: "Demasiados intentos, espere unos instantes",
         });
     }
 });

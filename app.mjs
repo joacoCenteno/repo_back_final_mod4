@@ -3,6 +3,7 @@ import {connectDB} from './config/dbConfig.mjs';
 import indexRoute from './routes/indexRoute.mjs';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 import cors from 'cors'
 
@@ -18,9 +19,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: "https://daleplaymusic.netlify.app",
+    credentials: true
+}));
 app.use(helmet());
-app.use(generalLimiter)
+app.use(cookieParser());
+app.use(generalLimiter);
 
 connectDB()
 

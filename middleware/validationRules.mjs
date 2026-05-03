@@ -53,7 +53,15 @@ export const musicValidator = [
     body('generos')
     .notEmpty().withMessage("Generos es requerido")
     .customSanitizer(value =>{
-        return value.split(',').map(item => item.trim()).filter(Boolean)
+        if(typeof value == 'string'){
+            return value.split(',').map(item => item.trim()).filter(Boolean);
+        }
+        if(Array.isArray(value)){
+            return value.map(item => (typeof item === 'string' ? item.trim() : item)).filter(Boolean);
+        }
+
+        return value || [];
+        
     })
     .isArray({min:1}).withMessage("Debe existir al menos un genero"),
     body('imagen')

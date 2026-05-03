@@ -113,7 +113,9 @@ export async function buscarPlaylists(req,res){
 
 
 let filtro = { 
-            favorito: { $ne: true } 
+            favorito: { $ne: true },
+            usuario: { $ne: process.env.ADMIN_ID}
+
         };
 
         if (q && q.trim() !== "") { 

@@ -15,3 +15,7 @@ export function crearInstanciaUsuario(body){
 export async function eliminarUsuario(id){
     return await UserRepository.eliminar(id)
 }
+
+export async function getUserByEmail(email){
+    return await UserRepository.getUserByEmail(email);
+}

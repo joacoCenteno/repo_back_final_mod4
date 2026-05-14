@@ -22,6 +22,10 @@ class UserRepository extends IUserRepository{
         return await User.findByIdAndDelete(id);
     }
 
+    async getUserByEmail(email){
+        return await User.findOne({email});
+    }
+
 }
 
 export default new UserRepository();

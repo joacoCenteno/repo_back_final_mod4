@@ -14,4 +14,8 @@ export default class ISongRepository{
     eliminar(id){
         throw new Error('Metodo eliminar() no implementado')
     }
+
+    getUserByEmail(email){
+        throw new Error('Metodo getUsuarioByEmail() no implementado')
+    }
 }

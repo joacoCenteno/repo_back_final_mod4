@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     profileImage: {type:String, default: 'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MzctYWV3LTExMV8xLWtsaGhqdDhxLmpwZw.jpg'},
     playlists: [{type: mongoose.Schema.Types.ObjectId, ref: 'Playlist'}],
-    role:{type: mongoose.Schema.Types.ObjectId, ref: 'Role'}
+    role:{type: mongoose.Schema.Types.ObjectId, ref: 'Role'},
+    resetPasswordToken : { type : String},
+    resetPasswordExpires : {type : Date}
 })
 
 const User = mongoose.model('User', userSchema, 'User');

@@ -42,3 +42,16 @@ export const writeLimiter = rateLimit({
     max: 20,
     keyGenerator: (req) => req.user?.id || ipKeyGenerator(req)
 })
+
+export const forgotPasswordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 3,
+    standardHeaders: true,
+    legacyHeaders: false,
+
+    handler: (req, res) => {
+        res.status(429).json({
+            message: "Demasiados intentos, espere unos instantes",
+        });
+    }
+});

@@ -3,8 +3,54 @@ import Role from '../models/Role.mjs'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import Playlist from '../models/PlaylistModel.mjs'
+import crypto from "crypto";
+import {getUserByEmail} from '../services/UserService.mjs'
 
 class AuthService{
+    async forgotPassword(email){
+        const user = await getUserByEmail(email);
+
+
+
+        if(!user){
+            return null
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+
+
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 15*60*1000
+
+
+        await user.save();
+
+        return {email_user: user.email, token}
+    }
+
+
+    async resetPassword(token, password){
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires : {$gt: Date.now()}
+        })
+
+        console.log(user);
+
+        if(!user){
+            return null
+        }
+
+        user.password = await bcrypt.hash(password,10);
+
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
+
+        await user.save();
+    }
+
+
+
     async register(userData){
         const existingUser = await User.findOne({
             $or: [{email: userData.email},{username: userData.username}]

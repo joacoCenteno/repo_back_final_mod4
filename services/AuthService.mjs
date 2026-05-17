@@ -35,7 +35,6 @@ class AuthService{
             resetPasswordExpires : {$gt: Date.now()}
         })
 
-        console.log(user);
 
         if(!user){
             return null

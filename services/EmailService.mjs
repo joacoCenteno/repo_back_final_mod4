@@ -2,9 +2,6 @@ import nodemailer from 'nodemailer';
 
 class EmailService {
     constructor(){
-        console.log("EMAIL:", process.env.EMAIL);
-        console.log("PASS:", process.env.EMAIL_PASSWORD);
-
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -15,7 +12,7 @@ class EmailService {
     }
 
     async sendRecuperation(email,token){
-        const link = `http://localhost:3000/auth/reset-password/${token}`;
+        const link = `https://daleplaymusic.netlify.app/autenticacion/reset-password/${token}`;
 
         await this.transporter.sendMail({
             from: process.env.EMAIL,
